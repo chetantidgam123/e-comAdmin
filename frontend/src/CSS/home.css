@@ -1,0 +1,16 @@
+.prodList{
+    display: grid;
+    gap: 30px;
+    grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+    padding:20px;
+}
+
+.prodCardBody{
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+}
+.prodCardBody>img{
+    width: 250px;
+    height: 250px;
+}
