@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup, Divider, Heading, Image, Stack, Text, useToast } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { AddtoCart, getProductList, getProdutDetails, updateProd } from '../service'
+import { AddtoCart, getProductList, getProdutDetails, removeProd, updateProd } from '../service'
 import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
 import '../CSS/home.css'
 import { AuthState } from '../Context/AuthProvider'
@@ -88,6 +88,26 @@ const Home = () => {
         navigate('/product/' + id)
 
     }
+    const RemoveProd = async (id) => {
+        await removeProd(id).then((res) => {
+            toast({
+                title: res.data.message,
+                status: "succcess",
+                duration: 5000,
+                isClosable: true,
+                position: "top-right"
+            })
+
+        }).catch((err) => {
+            toast({
+                title: err.message,
+                status: "warning",
+                duration: 5000,
+                isClosable: true,
+                position: "top-right"
+            })
+        })
+    }
     return (
         <>
             <Box className='prodList'>
@@ -111,7 +131,7 @@ const Home = () => {
                             <CardFooter>
                                 <ButtonGroup>
                                     {
-                                        user?.role == 'admin' ? <><Button variant='solid' colorScheme='blue' onClick={() => { navigate('/admin/editProd/' + e._id) }} >Edit</Button> <Button variant='solid' colorScheme='blue'>remove</Button></> : <Button onClick={() => { addtoCart(e._id) }} variant='solid' colorScheme='blue'>
+                                        user?.role == 'admin' ? <><Button variant='solid' colorScheme='blue' onClick={() => { navigate('/admin/editProd/' + e._id) }} >Edit</Button> <Button variant='solid' colorScheme='blue' onClick={() => { RemoveProd(e._id) }}>remove</Button></> : <Button onClick={() => { addtoCart(e._id) }} variant='solid' colorScheme='blue'>
                                             Add to cart
                                         </Button>
                                     }
