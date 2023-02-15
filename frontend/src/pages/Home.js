@@ -1,13 +1,19 @@
 import { Box, Button, ButtonGroup, Divider, Heading, Image, Stack, Text, useToast } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { AddtoCart, getProductList } from '../service'
+import { AddtoCart, getProductList, getProdutDetails, updateProd } from '../service'
 import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
 import '../CSS/home.css'
+import { AuthState } from '../Context/AuthProvider'
+import { useNavigate } from 'react-router-dom'
 const Home = () => {
+    const { user } = AuthState()
     const [products, setProducts] = useState([])
     const toast = useToast()
+    const navigate = useNavigate()
     useEffect(() => {
-        ProductsList()
+        setTimeout(() => {
+            ProductsList()
+        }, 1000);
     }, [])
 
     const ProductsList = async () => {
@@ -26,74 +32,102 @@ const Home = () => {
             });
     }
 
-    const addtoCart = async (id)=>{
-        await AddtoCart(id)
-        .then((data)=>{
-            if(data.data.code==200){
-                toast({
-                    title: data.data.message,
-                    status: "success",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "top-right"
-                })
-            }else{
-                toast({
-                    title: data.data.message,
-                    status: "warning",
-                    duration: 5000,
-                    isClosable: true,
-                    position: "top-right"
-                })
-
-            }
-        }).catch((err)=>{
+    const addtoCart = async (id) => {
+        if (!user) {
             toast({
-                title: err.error.message,
+                title: "Login Required",
                 status: "warning",
                 duration: 5000,
                 isClosable: true,
                 position: "top-right"
             })
-        })
+            return
+        }
+        await AddtoCart(id)
+            .then((data) => {
+                if (data.data.code == 200) {
+                    toast({
+                        title: data.data.message,
+                        status: "success",
+                        duration: 5000,
+                        isClosable: true,
+                        position: "top-right"
+                    })
+                } else {
+                    toast({
+                        title: data.data.message,
+                        status: "warning",
+                        duration: 5000,
+                        isClosable: true,
+                        position: "top-right"
+                    })
+
+                }
+            }).catch((err) => {
+                toast({
+                    title: err.error.message,
+                    status: "warning",
+                    duration: 5000,
+                    isClosable: true,
+                    position: "top-right"
+                })
+            })
+    }
+
+    const prodDetails = async (id) => {
+        if (!user) {
+            toast({
+                title: "Login Required",
+                status: "warning",
+                duration: 5000,
+                isClosable: true,
+                position: "top-right"
+            })
+            return
+        }
+        navigate('/product/' + id)
+
     }
     return (
         <>
-        <Box className='prodList'>
-            {products.map((e, i) => {
-                return (
-                    <Card key={i} maxW='sm'>
-                    <CardBody className='prodCardBody'>
-                      <Image
-                        src={e.image}
-                        alt={e.title}
-                        borderRadius='lg'
-                      />
-                      <Stack mt='6' spacing='3'>
-                        <Heading size='md'>{e.title}</Heading>
-                        <Text color='blue.600' fontSize='2xl'>
-                          ${e.price}
-                        </Text>
-                      </Stack>
-                    </CardBody>
-                    <Divider />
-                    <CardFooter>
-                      <ButtonGroup>
-                        <Button onClick={()=>{addtoCart(e._id)}} variant='solid' colorScheme='blue'>
-                        Add to cart
-                        </Button>
-                        <Button textAlign={'end'} variant='solid' colorScheme='blue'>
-                          View
-                        </Button>
-                      </ButtonGroup>
-                    </CardFooter>
-                  </Card>
-                        
-                )
+            <Box className='prodList'>
+                {products?.map((e, i) => {
+                    return (
+                        <Card key={i} maxW='sm'>
+                            <CardBody className='prodCardBody'>
+                                <Image
+                                    src={e.image}
+                                    alt={e.title}
+                                    borderRadius='lg'
+                                />
+                                <Stack mt='6' spacing='3'>
+                                    <Heading size='md'>{e.title}</Heading>
+                                    <Text color='blue.600' fontSize='2xl'>
+                                        ${e.price}
+                                    </Text>
+                                </Stack>
+                            </CardBody>
+                            <Divider />
+                            <CardFooter>
+                                <ButtonGroup>
+                                    {
+                                        user?.role == 'admin' ? <><Button variant='solid' colorScheme='blue' onClick={() => { navigate('/admin/editProd/' + e._id) }} >Edit</Button> <Button variant='solid' colorScheme='blue'>remove</Button></> : <Button onClick={() => { addtoCart(e._id) }} variant='solid' colorScheme='blue'>
+                                            Add to cart
+                                        </Button>
+                                    }
+
+                                    <Button onClick={() => { prodDetails(e._id) }} textAlign={'end'} variant='solid' colorScheme='blue'>
+                                        View
+                                    </Button>
+                                </ButtonGroup>
+                            </CardFooter>
+                        </Card>
+
+                    )
 
 
-            })}
-        </Box>
+                })}
+            </Box>
 
         </>
     )

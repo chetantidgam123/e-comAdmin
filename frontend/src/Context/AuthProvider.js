@@ -12,16 +12,15 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('token'))
         if (!token) {
-            navigate('/login')
+            // navigate('/')
             return
         }
         var decoded = jwtDecode(token);
-        console.log(decoded);
         setUser(decoded)
     }, [navigate]);
 
     return (
-        <AuthContext.Provider value={{ user, setUser,cartItemCount, setCartItemCount}}>
+        <AuthContext.Provider value={{ user, setUser, cartItemCount, setCartItemCount }}>
             {children}
         </AuthContext.Provider>
     )

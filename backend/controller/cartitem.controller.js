@@ -7,11 +7,11 @@ const { CartItemmodel } = require("../model/cartitem.model");
 const token_secret = process.env.TOKEN_KEY;
 
 const addToCart = async (req, res) => {
-    let { id } = req.params;
-    let Bearer = req.headers["authorization"]
-    let splittoken = Bearer.split(" ")
-    let token = splittoken[1].replace('"', '');
     try {
+        let { id } = req.params;
+        let Bearer = req.headers["authorization"]
+        let splittoken = Bearer.split(" ")
+        let token = splittoken[1].replace('"', '');
         var decode = jwt.verify(token, token_secret)
         if (decode) {
             let userEmail = decode.email
@@ -37,7 +37,7 @@ const addToCart = async (req, res) => {
                                     title: product.title,
                                     image: product.image,
                                     price: product.price,
-                                    category:product.category,
+                                    category: product.category,
                                     Qty: 1
                                 }
                             }
@@ -60,7 +60,7 @@ const addToCart = async (req, res) => {
                             title: product.title,
                             image: product.image,
                             price: product.price,
-                            category:product.category,
+                            category: product.category,
                             Qty: 1
                         }
                     ]
@@ -84,10 +84,10 @@ const addToCart = async (req, res) => {
 }
 
 const getUserCart = async (req, res) => {
-    let Bearer = req.headers["authorization"]
-    let splittoken = Bearer.split(" ")
-    var token = splittoken[1].replace('"', '');
     try {
+        let Bearer = req.headers["authorization"]
+        let splittoken = Bearer.split(" ")
+        var token = splittoken[1].replace('"', '');
         var decode = jwt.verify(token, token_secret)
         if (decode) {
             let userId = decode.userId.toString()
@@ -105,12 +105,12 @@ const getUserCart = async (req, res) => {
 }
 
 const updateCartQty = async (req, res) => {
-    let Bearer = req.headers["authorization"]
-    let splittoken = Bearer.split(" ")
-    let token = splittoken[1].replace('"', '');
-    const { id } = req.params
-    const { Qty } = req.body
     try {
+        let Bearer = req.headers["authorization"]
+        let splittoken = Bearer.split(" ")
+        let token = splittoken[1].replace('"', '');
+        const { id } = req.params
+        const { Qty } = req.body
         if (Qty > 0) {
             let existing_prod = await CartItemmodel.findOneAndUpdate({ "cartItem.cartId": id },
                 {
@@ -156,37 +156,37 @@ const updateCartQty = async (req, res) => {
 
 
 const clearCart = async (req, res) => {
-    // let Bearer = req.headers["authorization"]
-    // console.log(Bearer);
-    // let splittoken = Bearer.split(" ")
-    // let token = splittoken[1].replace('"', '');
-    // try {
-    //     var decode = jwt.verify(token, token_secret)
-    //     if (decode) {
-    //         let userId = decode.userId.toString()
-    //        let data =  await CartItemmodel.findOneAndUpdate(
-    //             { userId: userId },
-    //             { $set: { cartItem: [] } },
-    //             {new:true}
-    //         )
-    //         if(data){
-    //             let userCart = await CartItemmodel.findOne({ userId: userId });
-    //             let cartItem = userCart?.cartItem || []
-    //             return res.send({
-    //                 cartItem,
-    //                 message: ""
-    //             })
-    //         }else{
-    //             return res.send({
-    //                 cartItem,
-    //                 message: ""
-    //             }) 
-    //         }
-    //     }
+    try {
+        let Bearer = req.headers["authorization"]
+        console.log(Bearer);
+        let splittoken = Bearer.split(" ")
+        let token = splittoken[1].replace('"', '');
+        var decode = jwt.verify(token, token_secret)
+        if (decode) {
+            let userId = decode.userId.toString()
+            let data = await CartItemmodel.findOneAndUpdate(
+                { userId: userId },
+                { $set: { cartItem: [] } },
+                { new: true }
+            )
+            if (data) {
+                let userCart = await CartItemmodel.findOne({ userId: userId });
+                let cartItem = userCart?.cartItem || []
+                return res.send({
+                    cartItem,
+                    message: ""
+                })
+            } else {
+                return res.send({
+                    cartItem,
+                    message: ""
+                })
+            }
+        }
 
-    // } catch (error) {
-    //     return res.send(error)
-    // }
+    } catch (error) {
+        return res.send(error)
+    }
 }
 const getCart = async (req, res) => {
     let data = await CartItemmodel.find()
