@@ -41,6 +41,9 @@ function addProduct(data) {
 function updateProd(id, data) {
     return axios.put(Url + "admin/updateProd/" + id, data, config)
 }
+function removeProd(id) {
+    return axios.put(Url + "admin/removeProd/" + id, config)
+}
 
 
-export { registration, login, getProductList, AddtoCart, getUserCart, updateQty, getProdutDetails, ClearCart, addProduct, updateProd }
+export { registration, login, getProductList, AddtoCart, getUserCart, updateQty, getProdutDetails, ClearCart, addProduct, updateProd, removeProd }
