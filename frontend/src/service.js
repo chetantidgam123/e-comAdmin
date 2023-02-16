@@ -42,7 +42,7 @@ function updateProd(id, data) {
     return axios.put(Url + "admin/updateProd/" + id, data, config)
 }
 function removeProd(id) {
-    return axios.put(Url + "admin/removeProd/" + id, config)
+    return axios.get(Url + "admin/removeProd/" + id, config)
 }
 
 

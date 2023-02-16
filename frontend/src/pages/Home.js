@@ -1,4 +1,11 @@
-import { Box, Button, ButtonGroup, Divider, Heading, Image, Stack, Text, useToast } from '@chakra-ui/react'
+import { Box, Button, ButtonGroup, Divider, Heading, Image, Stack, Text, useToast ,    Menu,
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+    useDisclosure,} from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { AddtoCart, getProductList, getProdutDetails, removeProd, updateProd } from '../service'
 import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
@@ -6,9 +13,12 @@ import '../CSS/home.css'
 import { AuthState } from '../Context/AuthProvider'
 import { useNavigate } from 'react-router-dom'
 const Home = () => {
+    const { isOpen: isRemove, onOpen: onOpenRemove, onClose: onCloseRemove } = useDisclosure()
     const { user } = AuthState()
     const [products, setProducts] = useState([])
+    const [id, setId] = useState('')
     const toast = useToast()
+    const cancelRef1 = React.useRef()
     const navigate = useNavigate()
     useEffect(() => {
         setTimeout(() => {
@@ -108,6 +118,16 @@ const Home = () => {
             })
         })
     }
+    const RemoveConfirm = () => {
+        RemoveProd(id)
+        ProductsList()
+        onCloseRemove()
+        
+    }
+    const calltwoFun = (id)=>{
+        onOpenRemove()
+        setId(id)
+    }
     return (
         <>
             <Box className='prodList'>
@@ -131,7 +151,7 @@ const Home = () => {
                             <CardFooter>
                                 <ButtonGroup>
                                     {
-                                        user?.role == 'admin' ? <><Button variant='solid' colorScheme='blue' onClick={() => { navigate('/admin/editProd/' + e._id) }} >Edit</Button> <Button variant='solid' colorScheme='blue' onClick={() => { RemoveProd(e._id) }}>remove</Button></> : <Button onClick={() => { addtoCart(e._id) }} variant='solid' colorScheme='blue'>
+                                        user?.role == 'admin' ? <><Button variant='solid' colorScheme='blue' onClick={() => { navigate('/admin/editProd/' + e._id) }} >Edit</Button> <Button variant='solid' colorScheme='blue'  onClick={() =>  {calltwoFun(e._id) }}>remove</Button></> : <Button onClick={() => { addtoCart(e._id) }} variant='solid' colorScheme='blue'>
                                             Add to cart
                                         </Button>
                                     }
@@ -147,6 +167,32 @@ const Home = () => {
 
 
                 })}
+                 <AlertDialog
+                isOpen={isRemove}
+                leastDestructiveRef={cancelRef1}
+                onClose={onCloseRemove}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                            All In One
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            Are you sure? You want to Remove.
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef1} onClick={onCloseRemove}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme='red' onClick={RemoveConfirm} ml={3}>
+                                Yes
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
             </Box>
 
         </>

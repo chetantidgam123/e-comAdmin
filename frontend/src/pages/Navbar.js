@@ -73,10 +73,11 @@ const Navbar = () => {
         }
     }
     const logOutConfirm = () => {
-        localStorage.clear()
         onCloseLogout()
         navigate('/')
+        localStorage.clear()
     }
+  
     return (
         <>
             <Box className='navbar'>
@@ -87,11 +88,11 @@ const Navbar = () => {
                 </Box>
                 <Box>
                     {
-                        user?.role == 'admin' ? <Button me={2} onClick={() => { navigate('/admin/addProd') }}>Add Product <FaPlus></FaPlus></Button> : <></>
+                        user?.role == 'admin' ? <><Button onClick={() => { navigate('/admin/viewBuyer') }}>View Buyers</Button><Button mx={2} onClick={() => { navigate('/admin/addProd') }}>Add Product <FaPlus></FaPlus></Button> </>: <></>
                     }
                     <Menu className='menulist'>
                         <MenuButton as={Button} rightIcon={<ChevronDownIcon />} me={1}>
-                            {name}
+                           Hi. {name?name:"User"}
                         </MenuButton>
                         <MenuList >
                             {user ? <MenuItem onClick={onOpenLogout}>Logout</MenuItem> : <MenuItem onClick={() => { navigate('/login') }}>Login</MenuItem>}
@@ -148,7 +149,7 @@ const Navbar = () => {
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                            Shopdressup
+                            All In One
                         </AlertDialogHeader>
 
                         <AlertDialogBody>
@@ -166,6 +167,7 @@ const Navbar = () => {
                     </AlertDialogContent>
                 </AlertDialogOverlay>
             </AlertDialog>
+           
         </>
     )
 }
