@@ -1,6 +1,6 @@
 import axios from "axios"
-// const Url = "http://localhost:3066/"
-const Url = "https://ecomservice.onrender.com/"
+const Url = "http://localhost:3066/"
+// const Url = "https://ecomservice.onrender.com/"
 const token = JSON.parse(localStorage.getItem('token')) || ''
 const config = {
     headers: {
@@ -45,7 +45,7 @@ function removeProd(id) {
     return axios.get(Url + "admin/removeProd/" + id, config)
 }
 function addPurchaseItem(data) {
-    return axios.get(Url + "admin/addPurchaseItem", data, config)
+    return axios.post(Url + "admin/addPurchaseItem", data, config)
 }
 function getPurchaseList() {
     return axios.get(Url + "admin/getPurchaseList", config)

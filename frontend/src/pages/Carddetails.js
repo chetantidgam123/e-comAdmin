@@ -1,11 +1,14 @@
 import { Box, Button, Center, Heading, Input } from '@chakra-ui/react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../CSS/PaymentPage.css"
 import { useFormik } from "formik";
 import { paymenpageSchema, signUpSchema } from './Auth/schemas';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { ClearCart } from '../service';
+import { addPurchaseItem, ClearCart, getUserCart } from '../service';
+import { AuthState } from '../Context/AuthProvider';
 const Carddetails = () => {
+  const [cart, setCart] = useState([])
+  const { user } = AuthState()
   const navigate = useNavigate();
   const Formik = useFormik({
     initialValues: {
@@ -17,17 +20,35 @@ const Carddetails = () => {
     },
     validationSchema: paymenpageSchema,
     onSubmit: values => {
+      addPurchaseproduct()
       clearCart()
       navigate("/success");
     }
-
-
   })
+
+  const getUserCartItem = async () => {
+    if (user) {
+      await getUserCart()
+        .then((res) => {
+          setCart(res.data.cartItem)
+        })
+    } else {
+      setCart([])
+    }
+  }
+
+  const addPurchaseproduct = async () => {
+    let json = {
+      purchesItem: cart
+    }
+    await addPurchaseItem(json).then((res) => console.log(res.data)).catch(err => console.log(err))
+  }
+
   const clearCart = async () => {
     await ClearCart().then().catch((err) => { console.log(err); })
   }
   useEffect(() => {
-
+    getUserCartItem()
   }, [])
 
   return (

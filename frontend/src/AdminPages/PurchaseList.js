@@ -26,13 +26,14 @@ const PurchaseList = () => {
 
     return (
         <div>
-            <TableContainer w={'50%'} m={'auto'}>
+            <TableContainer w={'80%'} m={'auto'}>
                 <Table variant='striped' colorScheme='teal'>
                     <TableCaption>Purchased Product List</TableCaption>
                     <Thead>
                         <Tr>
                             <Th>Sr No</Th>
-                            <Th>User</Th>
+                            <Th>Name</Th>
+                            <Th>email</Th>
                             <Th>Product list</Th>
                         </Tr>
                     </Thead>
@@ -43,13 +44,14 @@ const PurchaseList = () => {
                                     <Tr key={ele._id}>
                                         <Td>{i + 1}</Td>
                                         <Td>{ele.user.name}</Td>
+                                        <Td>{ele.user.email}</Td>
                                         <Td >
                                             <ul>
                                                 {
-                                                    ele?.purchesItem.map((e) => {
+                                                    ele?.purchesItem.map((e, j) => {
                                                         return (
                                                             <>
-                                                                <li>{e.title}</li>
+                                                                <li key={j}>{e.title}</li>
                                                             </>
                                                         )
                                                     })

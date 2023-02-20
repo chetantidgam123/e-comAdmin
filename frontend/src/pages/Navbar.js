@@ -73,12 +73,17 @@ const Navbar = () => {
         }
     }
     const logOutConfirm = () => {
+        localStorage.clear()
         onCloseLogout()
         setName('')
         navigate('/login')
-        localStorage.clear()
     }
-
+    const paymentStart = async () => {
+        if (cart.length > 0) {
+            document.getElementById('btn-close').click()
+            navigate('/payment')
+        }
+    }
     return (
         <>
             <Box className='navbar'>
@@ -106,7 +111,7 @@ const Navbar = () => {
                 <div className="offcanvas offcanvas-end" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                     <div className="offcanvas-header">
                         <h5 id="offcanvasRightLabel">Cart Items</h5>
-                        <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        <button id='btn-close' type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div className="offcanvas-body">
                         <Box>
@@ -137,7 +142,7 @@ const Navbar = () => {
                             <Text fontSize={25} fontWeight='bold'>Total</Text>
                             <Text fontSize={25} fontWeight='bold'>${total}</Text>
                         </Box>
-                        <Button onClick={() => { if (cart.length > 0) navigate('/payment') }} variant={'solid'} colorScheme={'blue'}>Payment</Button>
+                        <Button onClick={paymentStart} variant={'solid'} colorScheme={'blue'}>Payment</Button>
                     </div>
                 </div>
             </Box>
