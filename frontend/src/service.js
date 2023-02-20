@@ -44,6 +44,12 @@ function updateProd(id, data) {
 function removeProd(id) {
     return axios.get(Url + "admin/removeProd/" + id, config)
 }
+function addPurchaseItem(data) {
+    return axios.get(Url + "admin/addPurchaseItem", data, config)
+}
+function getPurchaseList() {
+    return axios.get(Url + "admin/getPurchaseList", config)
+}
 
 
-export { registration, login, getProductList, AddtoCart, getUserCart, updateQty, getProdutDetails, ClearCart, addProduct, updateProd, removeProd }
+export { registration, login, getProductList, AddtoCart, getUserCart, updateQty, getProdutDetails, ClearCart, addProduct, updateProd, removeProd, addPurchaseItem, getPurchaseList }

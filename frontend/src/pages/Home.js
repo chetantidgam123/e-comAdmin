@@ -1,11 +1,13 @@
-import { Box, Button, ButtonGroup, Divider, Heading, Image, Stack, Text, useToast ,    Menu,
+import {
+    Box, Button, ButtonGroup, Divider, Heading, Image, Stack, Text, useToast, Menu,
     AlertDialog,
     AlertDialogBody,
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogContent,
     AlertDialogOverlay,
-    useDisclosure,} from '@chakra-ui/react'
+    useDisclosure,
+} from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { AddtoCart, getProductList, getProdutDetails, removeProd, updateProd } from '../service'
 import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
@@ -26,6 +28,12 @@ const Home = () => {
         }, 1000);
     }, [])
 
+    const removeSecond = () => {
+        setProducts(
+            products.filter(a => a._id !== id)
+        );
+
+    };
     const ProductsList = async () => {
         await getProductList()
             .then(async (result) => {
@@ -99,39 +107,49 @@ const Home = () => {
 
     }
     const RemoveProd = async (id) => {
-        await removeProd(id).then((res) => {
-            toast({
-                title: res.data.message,
-                status: "succcess",
-                duration: 5000,
-                isClosable: true,
-                position: "top-right"
+        await removeProd(id)
+            .then((res) => {
+                if (res.data.code === 200) {
+                    removeSecond()
+                    onCloseRemove()
+                    toast({
+                        title: res.data.message,
+                        status: "success",
+                        duration: 2000,
+                        isClosable: true,
+                        position: "top-right"
+                    })
+                } else {
+                    toast({
+                        title: res.data?.message,
+                        status: "warning",
+                        duration: 2000,
+                        isClosable: true,
+                        position: "top-right"
+                    })
+                }
+            }).catch((err) => {
+                toast({
+                    title: err.message,
+                    status: "warning",
+                    duration: 2000,
+                    isClosable: true,
+                    position: "top-right"
+                })
             })
-
-        }).catch((err) => {
-            toast({
-                title: err.message,
-                status: "warning",
-                duration: 5000,
-                isClosable: true,
-                position: "top-right"
-            })
-        })
     }
+
     const RemoveConfirm = () => {
         RemoveProd(id)
-        ProductsList()
-        onCloseRemove()
-        
     }
-    const calltwoFun = (id)=>{
+    const calltwoFun = (id) => {
         onOpenRemove()
         setId(id)
     }
     return (
         <>
             <Box className='prodList'>
-                {products?.map((e, i) => {
+                {products?.length > 0 && products?.map((e, i) => {
                     return (
                         <Card key={i} maxW='sm'>
                             <CardBody className='prodCardBody'>
@@ -151,7 +169,7 @@ const Home = () => {
                             <CardFooter>
                                 <ButtonGroup>
                                     {
-                                        user?.role == 'admin' ? <><Button variant='solid' colorScheme='blue' onClick={() => { navigate('/admin/editProd/' + e._id) }} >Edit</Button> <Button variant='solid' colorScheme='blue'  onClick={() =>  {calltwoFun(e._id) }}>remove</Button></> : <Button onClick={() => { addtoCart(e._id) }} variant='solid' colorScheme='blue'>
+                                        user?.role == 'admin' ? <><Button variant='solid' colorScheme='blue' onClick={() => { navigate('/admin/editProd/' + e._id) }} >Edit</Button> <Button variant='solid' colorScheme='blue' onClick={() => { calltwoFun(e._id) }}>remove</Button></> : <Button onClick={() => { addtoCart(e._id) }} variant='solid' colorScheme='blue'>
                                             Add to cart
                                         </Button>
                                     }
@@ -167,32 +185,32 @@ const Home = () => {
 
 
                 })}
-                 <AlertDialog
-                isOpen={isRemove}
-                leastDestructiveRef={cancelRef1}
-                onClose={onCloseRemove}
-            >
-                <AlertDialogOverlay>
-                    <AlertDialogContent>
-                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                            All In One
-                        </AlertDialogHeader>
+                <AlertDialog
+                    isOpen={isRemove}
+                    leastDestructiveRef={cancelRef1}
+                    onClose={onCloseRemove}
+                >
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                                All In One
+                            </AlertDialogHeader>
 
-                        <AlertDialogBody>
-                            Are you sure? You want to Remove.
-                        </AlertDialogBody>
+                            <AlertDialogBody>
+                                Are you sure? You want to Remove.
+                            </AlertDialogBody>
 
-                        <AlertDialogFooter>
-                            <Button ref={cancelRef1} onClick={onCloseRemove}>
-                                Cancel
-                            </Button>
-                            <Button colorScheme='red' onClick={RemoveConfirm} ml={3}>
-                                Yes
-                            </Button>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialogOverlay>
-            </AlertDialog>
+                            <AlertDialogFooter>
+                                <Button ref={cancelRef1} onClick={onCloseRemove}>
+                                    Cancel
+                                </Button>
+                                <Button colorScheme='red' onClick={RemoveConfirm} ml={3}>
+                                    Yes
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
             </Box>
 
         </>

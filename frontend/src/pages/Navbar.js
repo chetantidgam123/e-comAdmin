@@ -74,10 +74,11 @@ const Navbar = () => {
     }
     const logOutConfirm = () => {
         onCloseLogout()
-        navigate('/')
+        setName('')
+        navigate('/login')
         localStorage.clear()
     }
-  
+
     return (
         <>
             <Box className='navbar'>
@@ -88,14 +89,14 @@ const Navbar = () => {
                 </Box>
                 <Box>
                     {
-                        user?.role == 'admin' ? <><Button onClick={() => { navigate('/admin/viewBuyer') }}>View Buyers</Button><Button mx={2} onClick={() => { navigate('/admin/addProd') }}>Add Product <FaPlus></FaPlus></Button> </>: <></>
+                        name && user?.role == 'admin' ? <><Button onClick={() => { navigate('/admin/purchaseList') }}>View Buyers</Button><Button mx={2} onClick={() => { navigate('/admin/addProd') }}>Add Product <FaPlus></FaPlus></Button> </> : <></>
                     }
                     <Menu className='menulist'>
                         <MenuButton as={Button} rightIcon={<ChevronDownIcon />} me={1}>
-                           Hi. {name?name:"User"}
+                            Hi. {name ? name : "User"}
                         </MenuButton>
                         <MenuList >
-                            {user ? <MenuItem onClick={onOpenLogout}>Logout</MenuItem> : <MenuItem onClick={() => { navigate('/login') }}>Login</MenuItem>}
+                            {name ? <MenuItem onClick={onOpenLogout}>Logout</MenuItem> : <MenuItem onClick={() => { navigate('/login') }}>Login</MenuItem>}
                         </MenuList>
                     </Menu>
                     <Button onClick={getUserCartItem} className="" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
@@ -167,7 +168,7 @@ const Navbar = () => {
                     </AlertDialogContent>
                 </AlertDialogOverlay>
             </AlertDialog>
-           
+
         </>
     )
 }

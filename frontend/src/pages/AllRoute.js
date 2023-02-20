@@ -10,6 +10,7 @@ import PaymetSuccess from './PaymetSuccess'
 import AddNewProd from '../AdminPages/AddNewProd'
 import AdminRoute from './Auth/AdminRoute'
 import EditProduct from '../AdminPages/EditProduct'
+import PurchaseList from '../AdminPages/PurchaseList'
 
 const AllRoute = () => {
     return (
@@ -22,6 +23,7 @@ const AllRoute = () => {
                 <Route path="/product/:id" element={<PrivateRoute> <ProductDetails /></PrivateRoute>} />
                 <Route path='/admin/addProd' element={<AdminRoute> <AddNewProd /></AdminRoute>} />
                 <Route path='/admin/editProd/:id' element={<AdminRoute> <EditProduct /></AdminRoute>} />
+                <Route path='/admin/purchaseList' element={<AdminRoute> <PurchaseList /></AdminRoute>} />
                 <Route path='*' element={<ErrorPage />} />
             </Routes>
         </div>
